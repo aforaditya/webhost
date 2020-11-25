@@ -1,0 +1,345 @@
+var currversion=7;
+var page="https://kingextension.blogspot.com/2020/11/king-latest-version-1.html";
+var access="no";
+var otk="";
+var kingid="";
+var systemid="";
+var yyy=document.getElementById("licbtn");
+var zzz=document.getElementById("licenseinput");
+ var ttt=document.getElementById("validitytext");
+
+chrome.storage.local.get(['otk'], function(result) {
+   otk=result.otk;
+});
+chrome.storage.local.get(['kingid'], function(result) {
+  kingid=result.kingid;
+});
+chrome.storage.local.get(['systemid'], function(result) {
+  if(result.systemid==null)
+  {
+   
+      var random=Math.floor((Math.random() * 1000000) + 100000);
+      random= random.toString();
+      chrome.storage.local.set({systemid:random}, function(result) {
+         systemid=random;
+      });
+     
+     
+  }
+  else{
+    systemid=result.systemid;
+  }
+});
+
+
+var firebaseConfig = {
+  apiKey: "AIzaSyCFIqHDvMQ7aWfzSZRvRzn1fxYuEX7qhOg",
+  authDomain: "king-e3ddd.firebaseapp.com",
+  databaseURL: "https://king-e3ddd.firebaseio.com",
+  projectId: "king-e3ddd",
+  storageBucket: "king-e3ddd.appspot.com",
+  messagingSenderId: "691554358042",
+  appId: "1:691554358042:web:067c53904828a015f152a3"
+
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+
+
+
+ function E(aaa){
+   
+ 
+  var abcform=document.getElementById("abcform");   
+myTimer();
+
+
+function myTimer() {
+
+    if(abcform.style.display=="none" && aaa.val()=="\"livenow\"")
+    {
+         
+    
+        access="yes";
+    
+    locker();
+    subs();
+   
+    
+    }
+    
+    else
+        {
+
+   
+   
+        }
+
+
+
+
+        
+}
+
+    
+   
+    
+}
+
+licbtn.addEventListener("click",function(){
+  kingid=zzz.value;
+  chrome.storage.local.set({kingid:zzz.value}, function(result) {
+    kingid=zzz.value;
+   
+        });
+  
+  yyy.style.display="none";
+  zzz.style.display="none";
+  ttt.style.display="none";
+  var starCountRef = firebase.database().ref('users/'+zzz.value);
+  starCountRef.on('value', function(snapshot){
+  
+  E(snapshot);
+  });
+  
+})
+
+
+
+
+var updater = firebase.database().ref('users/'+"version");
+updater.on('value', function(snapshot){
+  if(snapshot.val()>currversion)
+  {
+    
+    
+  abcform.style.display="none";
+  yyy.style.display="none";
+  zzz.style.display="none";
+ 
+alert("New update available . Visit website to Download");
+location.replace(page);
+
+  }
+});
+
+
+
+function subs(){
+
+
+
+var expdate = firebase.database().ref('val/'+kingid);
+expdate.on('value', function(snapshot){
+  var today = new Date();
+
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+var subdate="";
+var finaldate = mm + '/' + dd + '/' + yyyy; 
+var datex=snapshot.val().substring(1,11).replaceAll("a","/");
+
+var dt=new Date(datex);
+
+
+dt= new Date(dt.setMonth(dt.getMonth() + 1));      
+
+
+var ddx = String(dt.getDate()).padStart(2, '0');
+var mmx = String(dt.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyyx= dt.getFullYear();
+
+subdate = mmx + '/' + ddx + '/' + yyyyx;
+
+    
+   
+    var date1 = new Date(subdate);
+  var date2 = new Date(finaldate);
+  
+  
+  const diffTime = Math.abs(date2 - date1);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  if(  yyy.style.display=="none")
+  document.getElementById('expiry').innerText="Validity: "+diffDays+" Days";
+  
+  
+ 
+});
+
+
+}
+
+
+var link=document.getElementById("savelinkcode");
+var linktext=document.getElementById("linkcode");
+link.addEventListener("click",function(){
+
+if(linktext.value.length==8)
+{
+    
+    chrome.storage.local.set({appcode:linktext.value}, function(result) {
+        console.log("linked");
+        alert('Your OTP app has been linked successfully');
+        location.reload();
+      });
+}
+else
+alert("Enter a valid 8 digit link code from the app.");
+
+
+
+});
+
+//To insert link code in box
+chrome.storage.local.get(['appcode'], function(result) {
+    linktext.value=result.appcode;
+    
+var otpfeeder = firebase.database().ref('otp/'+result.appcode);
+otpfeeder.on('value', function(snapshot){
+
+    chrome.storage.local.set({otpx:snapshot.val().substring(1,7)}, function(result) {
+        console.log("fed");
+      });
+ 
+});
+
+var otpfeedery = firebase.database().ref('otpy/'+result.appcode);
+otpfeedery.on('value', function(snapshot){
+
+    chrome.storage.local.set({otpy:snapshot.val().substring(1,9)}, function(result) {
+        console.log("fed2");
+      });
+ 
+});
+
+  });
+
+
+  function activate(){
+    abcform.style.display="block";
+    yyy.style.display="none";
+    zzz.style.display="none";
+    ttt.style.display="none";
+    var x=setTimeout(function(){
+  
+        chrome.storage.local.set({subscription: true}, function(result) {
+          yy=result.subscription;
+          });
+          chrome.storage.local.set({active: true}, function(result) {
+            zz=result.active;
+           });
+           chrome.storage.local.set({token:"newtoken"}, function() {
+            
+            clearTimeout(x);
+           });
+        
+    
+        
+    },1000)
+  }
+
+
+  chrome.storage.local.get(['otk'], function(result) {
+
+    if(result.otk!=null && result.otk=="7312" )
+    {
+        activate();
+        subs();
+        
+   var check = firebase.database().ref('users/'+kingid);
+   check.on('value', function(snapshot){
+   
+      if(snapshot.val()==null)
+      {
+        chrome.storage.local.set({otk: "73122"}, function(result) {});
+       
+alert("License Expired or Deleted");
+location.reload();
+      }
+    
+   });
+
+
+
+   
+    }
+   });
+
+
+   function locker(){
+   
+
+    
+      var lockerx = firebase.database().ref('newlock/'+kingid);
+      lockerx.on('value', function(snapshot){
+  if(snapshot.val()==null)
+  {
+   
+    firebase.database().ref('newlock/' + kingid).set(systemid);
+    chrome.storage.local.set({otk: "7312"}, function(result) {
+      activate();
+     });
+        
+   
+  }
+  else if(snapshot.val()==systemid)
+  {
+   
+    activate();
+  }
+  else
+  {
+    chrome.storage.local.set({otk: "73122"}, function(result) {
+    
+    });
+    chrome.storage.local.set({kingid: "404"}, function(result) {
+    
+  });
+    alert("License Expired or Already used");
+    location.reload();
+  }
+       
+     
+    });
+   }
+
+
+   var sb1=document.getElementById("saveBook");
+   var sb2=document.getElementById("saveBook2");
+sb1.addEventListener("click", function(){
+  chrome.storage.local.set({otpx:"000000"}, function() {
+          
+      
+  });
+  chrome.storage.local.set({otpy:"00000000"}, function() {
+     
+  
+  });
+})
+
+sb2.addEventListener("click", function(){
+  chrome.storage.local.set({otpx:"000000"}, function() {
+          
+      
+  });
+  chrome.storage.local.set({otpy:"00000000"}, function() {
+     
+  
+  });
+})
+
+
+
+  
+  
+
+   
+
+  
+
+
+
+
+
